@@ -8,7 +8,6 @@ import jakarta.persistence.Persistence;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.List;
 
 public class JpaMain {
 
@@ -16,87 +15,107 @@ public class JpaMain {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello");
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("[Input your order]");
-        String order = br.readLine();
         tx.begin();
-        if (order.equals("create")) {
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        System.out.print("-> Input your order : ");
+        String order = br.readLine();
+        if (order.equals("1")) {
             try {
+                // 비영속
                 Member member = new Member();
-                member.setId(1L);
-                member.setName("HelloA");
+                member.setId(100L);
+                member.setName("HelloJPA");
+
+                // 영속
+                System.out.println("-> BEFORE");
                 em.persist(member);
+                System.out.println("-> AFTER");
+
+                Member findMember = em.find(Member.class, 100L);
+                System.out.println("-> findMember.id : " + findMember.getId());
+                System.out.println("-> findMember.name : " + findMember.getName());
+
                 tx.commit();
             } catch (Exception e) {
                 tx.rollback();
             } finally {
                 em.close();
             }
-            emf.close();
-            return;
         }
 
-        if (order.equals("read")) {
+        if (order.equals("2")) {
             try {
-                Member findMember = em.find(Member.class, 1L);
-                System.out.println("[findMember.id] " + findMember.getId());
-                System.out.println("[findMember.name] " + findMember.getName());
+                Member member1 = new Member(101L, "A");
+                Member member2 = new Member(102L, "B");
+                em.persist(member1);
+                em.persist(member2);
+                System.out.println("====================");
                 tx.commit();
             } catch (Exception e) {
                 tx.rollback();
             } finally {
                 em.close();
             }
-            emf.close();
-            return;
         }
 
-        if (order.equals("delete")) {
+        if (order.equals("3")) {
             try {
-                Member findMember = em.find(Member.class, 1L);
-                em.remove(findMember);
+                Member member = em.find(Member.class, 100L);
+                member.setName("ZZZZZ");
+                // em.persist(member)가 없어도 자동으로 member가 업데이트 된다.
                 tx.commit();
             } catch (Exception e) {
                 tx.rollback();
             } finally {
                 em.close();
             }
-            emf.close();
-            return;
         }
 
-        if (order.equals("update")) {
+        if (order.equals("4")) {
             try {
-                Member findMember = em.find(Member.class, 1L);
-                findMember.setName("HelloJPA");
-                //em.persist(findMember); // 수정 시에는 persist X
+                Member member = new Member(100L, "Member");
+                em.persist(member);
+                em.flush();
+                System.out.println("=========================");
                 tx.commit();
             } catch (Exception e) {
                 tx.rollback();
             } finally {
                 em.close();
             }
-            emf.close();
-            return;
         }
 
-        if (order.equals("members")) {
+        if (order.equals("5")) {
             try {
-                List<Member> findMembers = em.createQuery("select m from Member m", Member.class)
-                        .setFirstResult(0)
-                        .setMaxResults(5)
-                        .getResultList();
-                for (Member member : findMembers) {
-                    System.out.println("[member.name] " + member.getName());
-                }
+                Member member = em.find(Member.class, 100L);
+                member.setName("AAAAA");
+                em.detach(member);
+                System.out.println("=========================");
                 tx.commit();
             } catch (Exception e) {
                 tx.rollback();
             } finally {
                 em.close();
             }
-            emf.close();
-            return;
         }
+
+        if (order.equals("6")) {
+            try {
+                Member member1 = em.find(Member.class, 100L);
+                member1.setName("BBBBB");
+                em.clear();
+                Member member2 = em.find(Member.class, 100L);
+                System.out.println("=========================");
+                tx.commit();
+            } catch (Exception e) {
+                tx.rollback();
+            } finally {
+                em.close();
+            }
+        }
+
+
+        emf.close();
     }
 }
