@@ -5,33 +5,32 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 
-import java.io.IOException;
-
 public class JpaMain {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello");
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         try {
-            Member member1 = new Member();
-            member1.setUsername("A");
+            Team team = new Team();
+            team.setName("TeamA");
+            em.persist(team);
 
-            Member member2 = new Member();
-            member2.setUsername("B");
+            Member member = new Member();
+            member.setUsername("member1");
+            member.setTeam(team);
+            em.persist(member);
 
-            Member member3 = new Member();
-            member3.setUsername("C");
+            em.flush();
+            em.clear();
 
-            System.out.println("=========================");
-            em.persist(member1);
-            em.persist(member2);
-            em.persist(member3);
-            System.out.println("-> member1.id : " + member1.getId());   // DB SEQ = 1, Application = 1
-            System.out.println("-> member2.id : " + member2.getId());   // DB SEQ = 51, Application = 2 (메모리)
-            System.out.println("-> member3.id : " + member3.getId());   // DB SEQ = 51, Application = 3 (메모리)
-            System.out.println("=========================");
+            Member findMember = em.find(Member.class, member.getId());
+            Team findTeam = findMember.getTeam();
+            System.out.println("-> findTeam : " + findTeam.getName());
+
+            Team newTeam = em.find(Team.class, 100L);
+            findMember.setTeam(newTeam);
 
             tx.commit();
         } catch (Exception e) {
