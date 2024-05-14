@@ -3,55 +3,63 @@ package jpabook.jpashop.domain;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Member {
 
-    @Id
-    @GeneratedValue()
-    private Long id;
-    private String name;
-    private String city;
-    private String street;
-    private String zipcode;
+	@Id
+	@GeneratedValue()
+	private Long id;
+	private String name;
+	private String city;
+	private String street;
+	private String zipcode;
 
-    public Long getId() {
-        return id;
-    }
+	// 외래키를 관리하는 것은 Order의 member
+	@OneToMany(mappedBy = "member")
+	private List<Order> orders = new ArrayList<>();
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getCity() {
-        return city;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setCity(String city) {
-        this.city = city;
-    }
+	public String getCity() {
+		return city;
+	}
 
-    public String getStreet() {
-        return street;
-    }
+	public void setCity(String city) {
+		this.city = city;
+	}
 
-    public void setStreet(String street) {
-        this.street = street;
-    }
+	public String getStreet() {
+		return street;
+	}
 
-    public String getZipcode() {
-        return zipcode;
-    }
+	public void setStreet(String street) {
+		this.street = street;
+	}
 
-    public void setZipcode(String zipcode) {
-        this.zipcode = zipcode;
-    }
+	public String getZipcode() {
+		return zipcode;
+	}
+
+	public void setZipcode(String zipcode) {
+		this.zipcode = zipcode;
+	}
 }

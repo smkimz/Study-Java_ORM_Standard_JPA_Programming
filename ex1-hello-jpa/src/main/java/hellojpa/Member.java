@@ -2,53 +2,42 @@ package hellojpa;
 
 import jakarta.persistence.*;
 
-import java.util.Date;
-
 @Entity
-@SequenceGenerator(
-        name = "MEMBER_SEQ_GENERATOR",
-        sequenceName = "MEMBER_SEQ",
-        initialValue = 1, allocationSize = 50
-)
 public class Member {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "MEMBER_SEQ_GENERATOR")
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "MEMBER_ID")
+	private Long id;
 
-    @Column(name = "name", nullable = false, unique = true)
-    private String username;
+	@Column(name = "USERNAME")
+	private String username;
 
-    private Integer age;
+	@ManyToOne
+	@JoinColumn(name = "TEAM_ID")
+	private Team team;
 
-    @Enumerated(EnumType.STRING)
-    private RoleType roleType;
+	public Long getId() {
+		return id;
+	}
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdDate;
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lastModifiedDate;
+	public String getUsername() {
+		return username;
+	}
 
-    @Lob
-    private String description;
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-    public Member() {
-    }
+	public Team getTeam() {
+		return team;
+	}
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
+	public void setTeam(Team team) {
+		this.team = team;
+	}
 }
