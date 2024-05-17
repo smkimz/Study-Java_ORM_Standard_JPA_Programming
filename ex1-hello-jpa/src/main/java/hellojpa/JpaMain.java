@@ -5,6 +5,8 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 
+import java.time.LocalDateTime;
+
 public class JpaMain {
 
 	public static void main(String[] args) {
@@ -13,19 +15,11 @@ public class JpaMain {
 		EntityTransaction tx = em.getTransaction();
 		tx.begin();
 		try {
-			// 1
-			Movie movie = new Movie();
-			movie.setDirector("AAA");
-			movie.setActor("BBB");
-			movie.setName("바람과함께사라지다");
-			movie.setPrice(10000);
-			em.persist(movie);
-
-			// 2
-			em.flush();
-			em.clear();
-			Item findItem = em.find(Item.class, movie.getId());
-			System.out.println("-> findItem : " + findItem);
+			Member member = new Member();
+			member.setUsername("user1");
+			member.setCreatedBy("creator1");
+			member.setCreatedDate(LocalDateTime.now());
+			em.persist(member);
 
 			tx.commit();
 		} catch (Exception e) {
