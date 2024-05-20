@@ -5,6 +5,8 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 
+import java.time.LocalDateTime;
+
 public class JpaMain {
 
 	public static void main(String[] args) {
@@ -14,13 +16,10 @@ public class JpaMain {
 		tx.begin();
 		try {
 			Member member = new Member();
-			member.setUsername("member1");
+			member.setUsername("user1");
+			member.setCreatedBy("creator1");
+			member.setCreatedDate(LocalDateTime.now());
 			em.persist(member);
-
-			Team team = new Team();
-			team.setName("teamA");
-			team.getMembers().add(member);
-			em.persist(team);
 
 			tx.commit();
 		} catch (Exception e) {
