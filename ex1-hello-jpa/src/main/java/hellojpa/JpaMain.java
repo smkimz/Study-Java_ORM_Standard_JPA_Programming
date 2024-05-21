@@ -4,8 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
-
-import java.time.LocalDateTime;
+import org.hibernate.Hibernate;
 
 public class JpaMain {
 
@@ -16,14 +15,18 @@ public class JpaMain {
 		tx.begin();
 		try {
 			Member member = new Member();
-			member.setUsername("user1");
-			member.setCreatedBy("creator1");
-			member.setCreatedDate(LocalDateTime.now());
+			member.setUsername("AAA");
 			em.persist(member);
+			em.flush();
+			em.clear();
 
+			Member reference = em.getReference(Member.class, member.getId());
+			System.out.println("member(reference) : " + reference.getClass());
+			Hibernate.initialize(reference);
 			tx.commit();
 		} catch (Exception e) {
 			tx.rollback();
+			e.printStackTrace();
 		} finally {
 			em.close();
 		}
