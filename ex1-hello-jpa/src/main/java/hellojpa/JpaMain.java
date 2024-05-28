@@ -5,8 +5,6 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 
-import java.util.List;
-
 public class JpaMain {
 
 	public static void main(String[] args) {
@@ -15,28 +13,17 @@ public class JpaMain {
 		EntityTransaction tx = em.getTransaction();
 		tx.begin();
 		try {
-			Team teamA = new Team();
-			teamA.setName("TeamA");
-			em.persist(teamA);
+			Child child1 = new Child();
+			Child child2 = new Child();
+			Parent parent = new Parent();
+			parent.addChild(child1);
+			parent.addChild(child2);
 
-			Team teamB = new Team();
-			teamB.setName("TeamB");
-			em.persist(teamB);
-
-			Member memberA = new Member();
-			memberA.setUsername("MemberA");
-			memberA.setTeam(teamA);
-			em.persist(memberA);
-
-			Member memberB = new Member();
-			memberB.setUsername("MemberB");
-			memberB.setTeam(teamB);
-			em.persist(memberB);
-
+			em.persist(parent);
 			em.flush();
 			em.clear();
-
-			List<Member> members = em.createQuery("SELECT m FROM Member m JOIN FETCH m.team", Member.class).getResultList();
+			Parent findParent = em.find(Parent.class, parent.getId());
+			em.remove(findParent);
 
 			tx.commit();
 		} catch (Exception e) {
